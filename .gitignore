@@ -17,3 +17,4 @@
 # IDE Files
 .idea/
 .DS_Store
+/broker-service/vendor/
