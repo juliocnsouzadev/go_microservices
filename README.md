@@ -12,3 +12,19 @@
 ### Deployments
 - Docker Swarm
 - Kubernetes
+
+### Dependencies
+- broker-service
+```bash
+go get github.com/go-chi/chi/v5
+go get github.com/go-chi/chi/v5/middleware
+go get github.com/go-chi/cors
+```
+
+- authentication-service
+```bash
+go get github.com/go-chi/chi/v5
+go get github.com/go-chi/chi/v5/middleware
+go get github.com/go-chi/cors
+go get golang.org/x/crypto/bcrypt
+```
