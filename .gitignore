@@ -18,3 +18,4 @@
 .idea/
 .DS_Store
 /*/vendor/
+db-data/
