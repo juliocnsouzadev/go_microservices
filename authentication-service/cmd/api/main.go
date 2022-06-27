@@ -15,7 +15,7 @@ import (
 	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
-const webPort = "8081"
+const webPort = "80"
 
 var counts int64
 
@@ -25,11 +25,10 @@ type Config struct {
 }
 
 func main() {
-	log.Println("Starting Authentication Service")
 
 	conn := connectToDB()
 	if conn == nil {
-		log.Panic("Cannot connect to Postgress")
+		log.Panic("Cannot connect to Postgres")
 	}
 
 	app := config.Config{
@@ -37,7 +36,7 @@ func main() {
 		Models: data.New(conn),
 	}
 
-	log.Printf("Starting broker service on port %s\n", webPort)
+	log.Printf("Starting auth service on port %s\n", webPort)
 
 	//define http server
 	server := &http.Server{

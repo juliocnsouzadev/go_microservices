@@ -9,6 +9,12 @@
                 <a id="broker-btn" class="btn btn-outline-primary text-center" href="javascript:void(0);">
                     Test Broker
                 </a>
+                <a id="auth-test-btn" class="btn btn-outline-primary text-center" href="javascript:void(0);">
+                    Test Auth
+                </a>
+                <a id="auth-btn" class="btn btn-outline-primary text-center" href="javascript:void(0);">
+                    Do Auth
+                </a>
                 <div id="output" class="mt-5" style="outline: 1px solid silver; padding: 2em;">
                     <span class="text-muted">Output shows here...</span>
                 </div>
@@ -34,29 +40,71 @@
 {{define "js"}}
     <script>
         const brokerBtn = document.getElementById("broker-btn")
+        const authTestBtn = document.getElementById("auth-test-btn")
+        const doAuthBtn = document.getElementById("auth-btn")
+
         const output = document.getElementById("output")
         const sent = document.getElementById("payload")
         const received = document.getElementById("received")
 
-        brokerBtn.addEventListener("click", function (){
-            const body = {
-                method: 'POST'
-            }
 
-            fetch("http:\/\/localhost:8080", body)
-                .then((reponse) => reponse.json())
-                .then((data) => {
-                    sent.innerHTML ="empty post request"
-                    received.innerHTML = JSON.stringify(data, undefined, 4)
-                    if (data.error){
-                       console.error(data.error)
-                    }else{
-                        output.innerHTML += `<br><strong>Response from Broker Service</strong>: ${data.message}`
-                    }
-                })
-                .catch((err) => {
-                    output.innerHTML += `<br><br>Error: ${err}`
-                })
-        })
+        function hitListener(service, port) {
+            return function () {
+                const emptyPostBody = {
+                    method: 'POST'
+                }
+                fetch(`http:\/\/localhost:${port}`, emptyPostBody)
+                    .then((reponse) => reponse.json())
+                    .then((data) => {
+                        sent.innerHTML = "empty post request"
+                        received.innerHTML = JSON.stringify(data, undefined, 4)
+                        if (data.error) {
+                            console.error(data.error)
+                        } else {
+                            output.innerHTML += `<br><strong>Response from ${service}</strong>: ${data.message}`
+                        }
+                    })
+                    .catch((err) => {
+                        output.innerHTML += `<br><br>Error: ${err}`
+                    })
+            };
+        }
+
+        function doAuth(service, port, email, password) {
+            return function () {
+
+                const authPostBody = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'auth',
+                        auth: {
+                            email: email,
+                            password: password
+                        }
+                    })
+                }
+                fetch(`http:\/\/localhost:${port}/handle`, authPostBody)
+                    .then((reponse) => reponse.json())
+                    .then((data) => {
+                        sent.innerHTML = JSON.stringify(JSON.parse(authPostBody.body), undefined, 4)
+                        received.innerHTML = JSON.stringify(data, undefined, 4)
+                        if (data.error) {
+                            output.innerHTML += `<br><strong>Error from ${service}</strong>: ${data.message}`
+                        } else {
+                            output.innerHTML += `<br><strong>Response from ${service}</strong>: ${data.message}`
+                        }
+                    })
+                    .catch((err) => {
+                        output.innerHTML += `<br><br>Error: ${err}`
+                    })
+            };
+        }
+
+        brokerBtn.addEventListener("click", hitListener("Broker Service", "9080"))
+        authTestBtn.addEventListener("click", hitListener("Auth Service", "9081"))
+        doAuthBtn.addEventListener("click", doAuth("Auth Service", "8080","admin@example.com", "verysecret"))
     </script>
 {{end}}
