@@ -42,12 +42,12 @@ build_front:
 	@echo Done!
 
 ## start: starts the front end
-start: build_front
+start: build_front up_build
 	@echo Starting front end
 	chdir .\front-end && start /B ${FRONT_END_BINARY} &
 
 ## stop: stop the front end
-stop:
+stop: down
 	@echo Stopping front end...
 	@taskkill /IM "${FRONT_END_BINARY}" /F
 	@echo "Stopped front end!"
