@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	webPort = "8080"
+	webPort = "80"
 )
 
 func main() {

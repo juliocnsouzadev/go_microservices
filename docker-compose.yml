@@ -16,24 +16,13 @@ services:
     volumes:
       - ./db-data/postgres:/var/lib/postgresql/data/
 
-  broker-service:
-    build:
-      context: ./broker-service
-      dockerfile: ./broker-service.dockerfile
-    restart: always
-    ports:
-      - "8080:8080"
-    deploy:
-      mode: replicated
-      replicas: 1
-
   authentication-service:
     build:
       context: ./authentication-service
       dockerfile: ./auth-service.dockerfile
     restart: always
     ports:
-      - "8081:8081"
+      - "9081:80"
     deploy:
       mode: replicated
       replicas: 1
@@ -41,3 +30,16 @@ services:
       DSN: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
     depends_on:
       - postgres
+
+  broker-service:
+    build:
+      context: ./broker-service
+      dockerfile: ./broker-service.dockerfile
+    restart: always
+    ports:
+      - "9080:80"
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - authentication-service
