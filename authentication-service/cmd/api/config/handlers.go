@@ -30,12 +30,12 @@ func (app *Config) Auth(writer http.ResponseWriter, request *http.Request) {
 
 	user, err := app.Models.User.GetByEmail(payload.Email)
 	if err != nil {
-		app.errorJson(writer, errors.New("invalid credentials"), http.StatusBadRequest)
+		app.errorJson(writer, errors.New("invalid credentials"), http.StatusUnauthorized)
 	}
 
 	valid, err := user.PasswordMatches(payload.Password)
 	if err != nil || !valid {
-		app.errorJson(writer, errors.New("invalid credentials"), http.StatusBadRequest)
+		app.errorJson(writer, errors.New("invalid credentials"), http.StatusUnauthorized)
 	}
 
 	result := JsonResponse{

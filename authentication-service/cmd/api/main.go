@@ -1,4 +1,4 @@
-package api
+package main
 
 import (
 	"authetication/cmd/api/config"
